@@ -1,0 +1,15 @@
+Redis has been deployed!
+
+To connect to Redis from within the cluster:
+
+  Service Name: {{ include "guestbook-redis.fullname" . }}
+  Port: {{ .Values.service.port }}
+
+Connection string from other pods:
+  redis://{{ include "guestbook-redis.fullname" . }}:{{ .Values.service.port }}
+
+To connect from your local machine for testing:
+
+  kubectl port-forward svc/{{ include "guestbook-redis.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then connect to: localhost:{{ .Values.service.port }}

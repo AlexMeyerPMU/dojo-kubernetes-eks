@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"log"
 
 	"github.com/gorilla/mux"
 	negroni "github.com/urfave/negroni/v3"
@@ -29,6 +30,7 @@ var (
 )
 
 func ListRangeHandler(rw http.ResponseWriter, req *http.Request) {
+    log.Printf("Range handler")
 	key := mux.Vars(req)["key"]
 	list := simpleredis.NewList(masterPool, key)
 	members := HandleError(list.GetAll()).([]string)
@@ -83,6 +85,7 @@ func main() {
 	defer masterPool.Close()
 
 	r := mux.NewRouter()
+
 	r.Path("/lrange/{key}").Methods("GET").HandlerFunc(ListRangeHandler)
 	r.Path("/rpush/{key}/{value}").Methods("GET").HandlerFunc(ListPushHandler)
 	r.Path("/info").Methods("GET").HandlerFunc(InfoHandler)

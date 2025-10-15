@@ -1,0 +1,21 @@
+name: guestbook
+services:
+  guestbook:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    environment:
+      "REDIS_HOST": "redis"
+    volumes:
+      - .:/app
+      - /app/tmp
+  redis:
+    image: redis:7
+    volumes:
+      - "/redis"
+volumes:
+  redis:
