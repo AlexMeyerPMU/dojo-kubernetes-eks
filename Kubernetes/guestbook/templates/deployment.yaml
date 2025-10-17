@@ -5,7 +5,6 @@ metadata:
   labels:
     app: guestbook
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: guestbook
@@ -17,6 +16,13 @@ spec:
       containers:
         - name: guestbook
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          resources:
+            limits:
+              cpu: 50m
+              memory: 25Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
           ports:
             - containerPort: 3000
           env:
@@ -24,13 +30,54 @@ spec:
               value: {{ .Values.redis.host }}
           livenessProbe:
             httpGet:
-              path: /healthz
-              port: 3000
+              path: {{ .Values.livenessProbe.httpGet.path }}
+              port: {{ .Values.livenessProbe.httpGet.port }}
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /healthz
-              port: 3000
+              path: {{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.readinessProbe.httpGet.port }}
             initialDelaySeconds: 5
             periodSeconds: 5
+        {{- if .Values.metrics.sidecar.enabled }}
+        - name: metrics-proxy
+          image: {{ .Values.metrics.sidecar.image.repository }}:{{ .Values.metrics.sidecar.image.tag }}
+          imagePullPolicy: {{ .Values.metrics.sidecar.image.pullPolicy }}
+          command: ["nginx", "-g", "daemon off;"]
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.sidecar.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.metrics.sidecar.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.metrics.sidecar.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.metrics.sidecar.resources | nindent 12 }}
+        {{- end }}
+      {{- if .Values.metrics.sidecar.enabled }}
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: guestbook-metrics-nginx-config
+      {{- end }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: guestbook

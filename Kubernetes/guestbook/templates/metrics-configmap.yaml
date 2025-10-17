@@ -1,0 +1,32 @@
+{{- if and .Values.metrics.enabled .Values.metrics.sidecar.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guestbook-metrics-nginx-config
+  labels:
+    app: guestbook
+data:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+    
+    http {
+        server {
+            listen {{ .Values.metrics.sidecar.port }};
+            
+            location /metrics {
+                proxy_pass http://localhost:3000/metrics;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            }
+            
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+        }
+    }
+{{- end }}

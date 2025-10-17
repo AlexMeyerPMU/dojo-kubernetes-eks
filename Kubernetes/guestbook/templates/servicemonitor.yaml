@@ -1,0 +1,23 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: guestbook-servicemonitor
+  labels:
+    app: guestbook
+    release: guestbook-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: guestbook
+  endpoints:
+    {{- if .Values.metrics.sidecar.enabled }}
+    - port: metrics
+      path: /metrics
+      interval: 30s
+    {{- else }}
+    - port: http
+      path: /metrics
+      interval: 30s
+    {{- end }}
+{{- end }}

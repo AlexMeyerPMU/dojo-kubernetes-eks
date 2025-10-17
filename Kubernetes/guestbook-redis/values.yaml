@@ -39,7 +39,7 @@ podAnnotations: {}
 podLabels: {}
 
 podSecurityContext: {}
-  # fsGroup: 2000
+# fsGroup: 2000
 
 securityContext: {}
   # capabilities:
@@ -47,7 +47,7 @@ securityContext: {}
   #   - ALL
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
-  # runAsUser: 1000
+# runAsUser: 1000
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
@@ -73,8 +73,8 @@ livenessProbe:
 readinessProbe:
   exec:
     command:
-    - redis-cli
-    - ping
+      - redis-cli
+      - ping
   initialDelaySeconds: 5
   periodSeconds: 5
 
@@ -89,3 +89,21 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Prometheus metrics configuration
+metrics:
+  enabled: true
+  sidecar:
+    enabled: true
+    image:
+      repository: oliver006/redis_exporter
+      tag: "v1.55.0"
+      pullPolicy: IfNotPresent
+    port: 9121
+    resources:
+      limits:
+        cpu: 50m
+        memory: 64Mi
+      requests:
+        cpu: 10m
+        memory: 32Mi

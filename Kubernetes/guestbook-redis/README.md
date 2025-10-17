@@ -13,12 +13,12 @@ The chart is configured with the following key settings:
 - **Redis Version**: 7.2.4
 - **Service Type**: ClusterIP (internal cluster access only)
 - **Port**: 6379 (standard Redis port)
-- **Resources**: 
-  - CPU: 100m request/limit
-  - Memory: 128Mi request/limit
+- **Resources**:
+    - CPU: 100m request/limit
+    - Memory: 128Mi request/limit
 - **Probes**:
-  - Liveness: TCP socket check on Redis port
-  - Readiness: Redis CLI ping command
+    - Liveness: TCP socket check on Redis port
+    - Readiness: Redis CLI ping command
 
 ## Installation
 

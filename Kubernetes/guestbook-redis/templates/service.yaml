@@ -11,5 +11,11 @@ spec:
       targetPort: redis
       protocol: TCP
       name: redis
+    {{- if .Values.metrics.sidecar.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.sidecar.port }}
+      targetPort: {{ .Values.metrics.sidecar.port }}
+      protocol: TCP
+    {{- end }}
   selector:
     {{- include "guestbook-redis.selectorLabels" . | nindent 4 }}
