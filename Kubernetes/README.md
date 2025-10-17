@@ -454,3 +454,15 @@ Kube-shark permet d'observer le trafic réseau dans votre cluster, utile pour d�
 - Implémentez des probes pour toutes vos applications
 - Versionnez vos images de conteneurs (évitez `latest`)
 - Utilisez des namespaces pour isoler vos environnements
+
+
+helm install actions-runner-controller actions-runner-controller/actions-runner-controller --namespace actions --create-namespace --version 0.22.0 -f runner-controller.yaml
+
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.13.0 --set installCRDs=true
+
+
+##### Add repository 
+```shell helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller ``` 
+##### Install Helm chart ```shell helm upgrade --install --namespace actions-runner-system --create-namespace --set=authSecret.create=true --set=authSecret.github_token="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" --wait actions-runner-controller actions-runner-controller/actions-runner-controller ``` 
+
+*note:- Replace REPLACE_YOUR_TOKEN_HERE with your PAT that was generated previously.

@@ -1,0 +1,99 @@
+# Helm values for Actions Runner Controller
+
+# Controller replica count
+replicaCount: 1
+
+# GitHub authentication
+authSecret:
+  enabled: true
+  create: false  # We'll create the secret manually
+  name: "controller-manager"
+
+# Controller image
+image:
+  repository: "summerwind/actions-runner-controller"
+  tag: "v0.27.6"
+  pullPolicy: IfNotPresent
+
+# Runner images
+actionsRunnerImage:
+  repository: "summerwind/actions-runner"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# Docker-in-Docker sidecar image (for builds that need Docker)
+dockerImage:
+  repository: "docker"
+  tag: "dind"
+  pullPolicy: IfNotPresent
+
+# Service account
+serviceAccount:
+  create: true
+  name: ""
+
+# cert-manager integration (required)
+certManagerEnabled: true
+
+# Metrics and monitoring
+metrics:
+  serviceMonitor:
+    enabled: false
+  port: 8443
+  proxy:
+    enabled: false
+
+# Logging
+logLevel: info
+logFormat: text
+
+# Sync period for runner reconciliation
+syncPeriod: 1m
+
+# Default scale down delay for runners
+defaultScaleDownDelay: 10m
+
+# Leader election (for HA setups)
+enableLeaderElection: true
+leaderElectionId: "actions-runner-controller-leader"
+
+# Resources for the controller
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# GitHub webhook server (optional, for advanced auto-scaling)
+githubWebhookServer:
+  enabled: false
+  # If enabled, you'll need to configure webhook in GitHub
+  # port: 8000
+
+# Runner pod defaults
+runner:
+  # Default runner image
+  image:
+    repository: "summerwind/actions-runner"
+    tag: "latest"
+  
+  # Default resource limits for runner pods
+  resources:
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+
+# Pod security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Node selector, tolerations, and affinity
+nodeSelector: {}
+tolerations: []
+affinity: {}
