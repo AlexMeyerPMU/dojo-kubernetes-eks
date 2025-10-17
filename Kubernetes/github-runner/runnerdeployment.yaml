@@ -26,9 +26,21 @@ spec:
       # Optional: Runner group (for enterprise)
       # group: "Default"
       
-      # Optional: Enable Docker-in-Docker for container builds
+      # Enable Docker-in-Docker for container builds
       # This allows workflows to build and run Docker containers
       dockerdWithinRunnerContainer: true
+      
+      # Run with privileged mode for Docker-in-Docker
+      dockerEnabled: true
+      
+      # Explicitly configure DinD container
+      dockerdContainerResources:
+        limits:
+          cpu: "1"
+          memory: "2Gi"
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
       
       # Optional: Runner image (defaults to controller's default)
       # image: summerwind/actions-runner:latest
