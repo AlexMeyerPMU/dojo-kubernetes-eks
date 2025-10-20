@@ -1,0 +1,9 @@
+gha-runner-scale-set:
+  runnerScaleSetName: gha-runner
+
+  githubConfigUrl: https://github.com/AlexMeyerPMU/dojo-kubernetes-eks
+  githubConfigSecret: gha-secret
+
+  controllerServiceAccount:
+    name: gha-runner-scale-set-controller
+    namespace: gha-runner

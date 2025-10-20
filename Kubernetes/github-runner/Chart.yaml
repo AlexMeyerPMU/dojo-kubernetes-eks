@@ -1,0 +1,12 @@
+apiVersion: v2
+name: gha-runners
+description: A Helm chart deploying runners for github action
+type: application
+version: 0.1.0
+dependencies:
+  - name: gha-runner-scale-set-controller
+    version: 0.13.0
+    repository: oci://ghcr.io/actions/actions-runner-controller-charts
+  - name: gha-runner-scale-set
+    version: 0.13.0
+    repository: oci://ghcr.io/actions/actions-runner-controller-charts
