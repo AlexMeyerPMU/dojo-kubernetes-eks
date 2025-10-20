@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/AlexMeyerPMU/dojo-kubernetes-eks.git
-    path: Kubernetes/argocd/root-app/
+    path: Kubernetes/argocd/root-app
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
