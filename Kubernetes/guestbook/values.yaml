@@ -83,7 +83,7 @@ readinessProbe:
 # This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
   enabled: false
-  minReplicas: 2
+  minReplicas: 4
   maxReplicas: 10
   targetCPUUtilizationPercentage: 60
 
